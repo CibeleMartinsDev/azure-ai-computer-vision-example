@@ -23,6 +23,15 @@ public class ComputerVisionResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public Response postImage(@RestForm("image") FileUpload image){
-        return Response.ok(computerVisionService.getContactsByImage(image)).build();
+        return Response.ok(computerVisionService.getTextByImage(image)).build();
     }
+
+    @POST
+    @Path("image-classification")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postImageClassification(@RestForm("image") FileUpload image) throws Exception {
+        return Response.ok(computerVisionService.getClassification(image)).build();
+    }
+
+
 }
