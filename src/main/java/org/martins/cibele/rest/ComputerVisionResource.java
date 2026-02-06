@@ -28,10 +28,10 @@ public class ComputerVisionResource {
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public RestResponse postImage(@RestForm("image") FileUpload image, @RestForm("feature") String feature, @RestForm("sdkOrRest")  String sdkOrRest) throws Exception {
+    public RestResponse analyzeImage(@RestForm("image") FileUpload image, @RestForm("feature") String feature, @RestForm("sdkOrRest")  String sdkOrRest) throws Exception {
 
         if(sdkOrRest.equalsIgnoreCase("SDK")){
-            return RestResponse.ok(computerVisionSDKService.getAnalysisImageSDK(image, feature));
+            return RestResponse.ok(computerVisionSDKService.analyzeImageSDK(image, feature));
         }else {
             return RestResponse.ok(computerVisionService.analyzeImage(image, feature));
         }
@@ -39,10 +39,10 @@ public class ComputerVisionResource {
     }
 
     @POST
-    @Path("image-classification")
+    @Path("custom-vision")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postImageClassification(@RestForm("image") FileUpload image) throws Exception {
-        return Response.ok(computerVisionService.getClassificationREST(image)).build();
+    public Response postImageClassification(@RestForm("image") FileUpload image, @RestForm("feature") String feature, @RestForm("sdkOrRest")  String sdkOrRest) throws Exception {
+        return Response.ok(computerVisionService.getCustomVision(image, feature, sdkOrRest)).build();
     }
 
 

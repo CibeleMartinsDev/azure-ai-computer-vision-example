@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.UriInfo;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 import org.martins.cibele.client.ComputerVisionClient;
 import org.martins.cibele.client.CustomComputerVisionClient;
@@ -22,7 +23,6 @@ import java.util.UUID;
 
 @ApplicationScoped
 public class ComputerVisionService {
-
 
 //    @ConfigProperty(name = "my.property.azure-base-url")
 //    private String endpoint;
@@ -43,6 +43,9 @@ public class ComputerVisionService {
     @RestClient
     ComputerVisionClient computerVisionClient;
 
+    @Inject
+    ComputerVisionSDKService computerVisionSDKService;
+
     public String analyzeImage(FileUpload image, String feature) throws Exception {
         try {
 
@@ -57,8 +60,21 @@ public class ComputerVisionService {
         }
     }
 
+    public Object getCustomVision(FileUpload image, String feature, String sdkOrRest) throws Exception {
+        if(feature.equalsIgnoreCase("classification") && sdkOrRest.equalsIgnoreCase("sdk") ){
+            return this.computerVisionSDKService.classificationImageSDK(image);
+        }else if(feature.equalsIgnoreCase("detectionObjects") && sdkOrRest.equalsIgnoreCase("sdk") ){
+//            return this.computerVisionSDKService.classificationImageSDK(image);
+        } else if(feature.equalsIgnoreCase("classification") && sdkOrRest.equalsIgnoreCase("rest") ){
+            return this.classificationImageREST(image);
+        }else if(feature.equalsIgnoreCase("detectionObjects") && sdkOrRest.equalsIgnoreCase("rest") ){
+//            return this.computerVisionSDKService.classificationImageSDK(image);
+        }
 
-    public String getClassificationREST(FileUpload image) throws Exception {
+        return new Object();
+    }
+
+    public String classificationImageREST(FileUpload image) throws Exception {
       try {
           byte[] imageBytes = Files.readAllBytes(image.filePath());
           return customComputerVisionClient.sendImageForClassificaiton(imageBytes, predictionKey, "application/octet-stream");
@@ -66,6 +82,7 @@ public class ComputerVisionService {
           throw new Exception("Ocorreu um erro ao classificar a imagem: " + e.getCause() + e.getMessage());
       }
     }
+
 
 
 }
