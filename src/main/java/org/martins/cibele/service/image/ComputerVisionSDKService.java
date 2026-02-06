@@ -26,7 +26,7 @@ public class ComputerVisionSDKService {
     @ConfigProperty(name = "my.property.azure.cv.img.analysis.api.key")
     private String key;
 
-    public ImageAnalysisResult getAnalysisImageSDK(FileUpload image, String feature){
+    public ImageAnalysisResult analyzeImageSDK(FileUpload image, String feature){
 
         Path imagePath = image.filePath();
         ImageAnalysisResult result = null;
@@ -67,5 +67,13 @@ public class ComputerVisionSDKService {
         }
         return result;
     }
+
+//    public String classificationImageSDK(FileUpload image){
+//
+//    }
+
+//    public String detectionObjectsImageSDK(FileUpload image){
+//
+//    }
 
 }

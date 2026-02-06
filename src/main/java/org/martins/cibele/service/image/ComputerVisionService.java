@@ -1,7 +1,10 @@
 package org.martins.cibele.service.image;
 
+import com.azure.core.util.BinaryData;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.UriInfo;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
@@ -11,6 +14,10 @@ import org.martins.cibele.domain.ImageAnalysisRequest;
 
 
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 
 @ApplicationScoped
@@ -36,12 +43,14 @@ public class ComputerVisionService {
     @RestClient
     ComputerVisionClient computerVisionClient;
 
-
     public String analyzeImage(FileUpload image, String feature) throws Exception {
         try {
+
+            Path pathImage = image.filePath();
+            BinaryData  binary = BinaryData.fromFile(pathImage);
             ImageAnalysisRequest request = new ImageAnalysisRequest();
-            request.setUrl(image.filePath().toString());
-            String result = computerVisionClient.sendImage(feature, "", "pt", "", true, "2023-04-01", "Bearer " + key, request);
+            request.setUrl(binary.toString());
+            String result = computerVisionClient.sendImage("2024-02-01",feature, "pt",  key, request);
             return result;
         }catch (Exception e){
             throw new Exception("Ocorreu um erro ao analisar a imagem: " + e.getCause() + e.getMessage());

@@ -8,20 +8,17 @@ import org.martins.cibele.domain.ImageAnalysisRequest;
 
 
 @RegisterRestClient(configKey = "cv-client")
-@Consumes(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_OCTET_STREAM)
 @Produces(MediaType.APPLICATION_JSON)
 @ConfigProperty(name = "")
 public interface ComputerVisionClient {
 
     @POST
-    @Path("/imageanalysis:analyze")
-    String sendImage(  @QueryParam("features") String features,
-                       @QueryParam("model-name") String modelName,
+    @Path("/computervision/imageanalysis:analyze")
+    String sendImage(    @QueryParam("api-version") String modelVersion,
+                         @QueryParam("features") String features,
                        @QueryParam("language") String language,
-                       @QueryParam("smartcrops-aspect-ratios") String smartCropsAspectRatios,
-                       @QueryParam("gender-neutral-caption") Boolean genderNeutralCaption,
-                       @QueryParam("api-version") String apiVersion,
-                       @HeaderParam("Authorization") String auth,
+                       @HeaderParam("Ocp-Apim-Subscription-Key") String auth,
                        ImageAnalysisRequest body);
 
 }
